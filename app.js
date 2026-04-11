@@ -20,11 +20,11 @@ const defaultData = {
   ],
   treeEdges: [['n1','n2'],['n2','n3'],['n3','n27'],['n27','n28'],['n28','n29'],['n29','n30']],
   notables: [
-    { name: '정종은', period: '신라', achievement: '영일정씨 시조로 전승되는 인물' },
-    { name: '정습명', period: '고려', achievement: '예부시랑·한림학사·추밀원지주사, 왕실 사부 역할' },
-    { name: '정몽주', period: '고려 말', achievement: '문하찬성사·예문관제학, 고려의 절신이자 외교가·학자' },
-    { name: '정보(설곡)', period: '조선 전기', achievement: '감찰·예안현감, 정몽주의 손자' },
-    { name: '정세필', period: '조선 전기', achievement: '경상좌도병마절도사, 영일정씨 족보 편찬 관련 인물' }
+    { name: '정종은(鄭宗殷)', period: '신라', achievement: '영일정씨 시조로 전승되는 인물' },
+    { name: '정습명(鄭襲明)', period: '고려', achievement: '예부시랑·한림학사·추밀원지주사, 왕실 사부 역할' },
+    { name: '정몽주(鄭夢周)', period: '고려 말', achievement: '문하찬성사·예문관제학, 고려의 절신이자 외교가·학자' },
+    { name: '정보(鄭保)', period: '조선 전기', achievement: '감찰·예안현감, 정몽주의 손자' },
+    { name: '정세필(鄭世弼)', period: '조선 전기', achievement: '경상좌도병마절도사, 영일정씨 족보 편찬 관련 인물' }
   ],
   directPeople: [
     { title: '27대 정용범(鄭龍範)', body: '직계 할아버지. 추후 출생지, 생몰년, 공적, 문중 활동을 추가 입력할 수 있도록 확장 가능.' },
