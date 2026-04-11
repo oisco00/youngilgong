@@ -310,20 +310,67 @@ function fileToDataURL(file) {
   });
 }
 
-function getGitHubApiUrl() {
-  let { owner, repo, branch, mediaPath } = state.github || {};
+function buildGitHubRepoCandidates() {
+  const cfg = state.github || {};
+  let owner = (cfg.owner || '').trim();
+  const branch = (cfg.branch || 'main').trim() || 'main';
+  const mediaPath = (cfg.mediaPath || 'media').trim() || 'media';
 
   if ((!owner || owner === 'YOUR_GITHUB_ID') && location.hostname.endsWith('github.io')) {
     owner = location.hostname.replace('.github.io', '');
   }
 
-  if ((!repo || repo === 'YOUR_REPOSITORY_NAME') && location.hostname.endsWith('github.io')) {
-    const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
-    repo = firstPath;
+  const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
+  const candidates = [];
+  const seen = new Set();
+
+  function add(repo) {
+    repo = String(repo || '').trim();
+    if (!repo || repo === 'YOUR_REPOSITORY_NAME' || seen.has(repo)) return;
+    seen.add(repo);
+    candidates.push({ owner, repo, branch, mediaPath });
   }
 
-  if (!owner || !repo) return '';
-  return `https://api.github.com/repos/${owner}/${repo}/contents/${mediaPath || 'media'}?ref=${branch || 'main'}`;
+  add(cfg.repo);
+  if (owner) add(`${owner}.github.io`);
+  add(firstPath);
+
+  return candidates.filter(item => item.owner && item.repo);
+}
+
+async function fetchGitHubMediaItems() {
+  const candidates = buildGitHubRepoCandidates();
+  if (!candidates.length || !location.protocol.startsWith('http')) return null;
+
+  for (const cand of candidates) {
+    const url = `https://api.github.com/repos/${cand.owner}/${cand.repo}/contents/${cand.mediaPath}?ref=${cand.branch}`;
+    try {
+      const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const items = data
+        .filter(item => item.type === 'file')
+        .map(item => ({
+          type: inferMediaType(item.name),
+          file: item.name,
+          title: titleFromFileName(item.name),
+          url: item.download_url,
+          source: 'github'
+        }))
+        .filter(item => item.type !== 'other')
+        .sort((a,b) => a.file.localeCompare(b.file, 'ko'));
+
+      if (items.length) {
+        return {
+          items,
+          repoLabel: `${cand.owner}/${cand.repo}`
+        };
+      }
+    } catch (err) {
+      // 다음 후보 저장소로 계속 시도
+    }
+  }
+  return null;
 }
 
 function inferMediaType(name) {
@@ -343,30 +390,12 @@ function titleFromFileName(name) {
 
 async function loadMediaItems() {
   const status = qs('#mediaStatus');
-  status.textContent = '미디어 목록을 불러오는 중입니다...';
+  status.textContent = 'media 폴더를 확인하는 중입니다...';
 
-  const githubUrl = getGitHubApiUrl();
-  if (githubUrl && location.protocol.startsWith('http')) {
-    try {
-      const res = await fetch(githubUrl);
-      if (!res.ok) throw new Error('GitHub API 조회 실패');
-      const data = await res.json();
-      const items = data
-        .filter(item => item.type === 'file')
-        .map(item => ({
-          type: inferMediaType(item.name),
-          file: item.name,
-          title: titleFromFileName(item.name),
-          url: item.download_url,
-          source: 'github'
-        }))
-        .filter(item => item.type !== 'other')
-        .sort((a,b) => a.file.localeCompare(b.file, 'ko'));
-      status.textContent = `GitHub media 폴더에서 ${items.length}개의 사진·영상을 불러왔습니다.`;
-      return items;
-    } catch (err) {
-      status.textContent = 'GitHub 자동 조회에 실패하여 media.json 목록으로 전환합니다.';
-    }
+  const githubResult = await fetchGitHubMediaItems();
+  if (githubResult) {
+    status.textContent = `${githubResult.repoLabel} 저장소의 media 폴더에서 ${githubResult.items.length}개의 사진·영상을 자동 배열했습니다.`;
+    return githubResult.items;
   }
 
   try {
@@ -380,10 +409,10 @@ async function loadMediaItems() {
       url: item.url || `media/${item.file}`,
       source: 'local'
     })).filter(item => item.type !== 'other').sort((a,b) => (a.file || '').localeCompare((b.file || ''), 'ko'));
-    status.textContent = `media.json 기준으로 ${items.length}개의 사진·영상을 배열했습니다.`;
+    status.textContent = `로컬 실행이므로 media.json 기준으로 ${items.length}개의 사진·영상을 배열했습니다.`;
     return items;
   } catch (err) {
-    status.textContent = '표시할 미디어가 없습니다. media 폴더와 media.json을 확인해 주세요.';
+    status.textContent = 'GitHub 저장소의 media 폴더를 찾지 못했습니다. app.js의 GitHub 설정 또는 media.json을 확인해 주세요.';
     return [];
   }
 }
