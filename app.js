@@ -5,7 +5,7 @@ const defaultData = {
   subtitle: '좌랑공파 · 문중 계보 · 원당 재실 · 기록 아카이브',
   github: {
     owner: 'oisco00',
-    repo: '',
+    repo: 'oisco00.github.io',
     branch: 'main',
     mediaPath: 'media'
   },
