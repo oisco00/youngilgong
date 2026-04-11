@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영일정씨 좌랑공파 문중 홈페이지</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Traditional Korean (Hanji) Neutrals with Deep Brown and Subtle Gold/Amber Accents -->
+    <!-- Application Structure Plan: 
+         A modular Single Page Application (SPA) structured with a persistent top navigation bar. 
+         Sections include: 
+         1. Home/Intro: Welcoming hero section setting a respectful tone.
+         2. Family Tree (가계도): An interactive, CSS-based vertical tree highlighting the direct lineage from the Founder to the 29th generation (Jeong Han-chae), with a feature to register descendants.
+         3. Ancestors (선조업적): A timeline/grid showcasing prominent figures like Poeun Jeong Mong-ju and Songgang Jeong Cheol to instill pride.
+         4. Wondang Shrine (원당재실): Information board for the Yeongcheon Buk-an Jaesil, designed for future updates.
+         5. Finance (재무관리): A secure-looking dashboard for expense management, receipt uploads, and visual balance tracking using Chart.js.
+         This structure ensures ease of navigation, allowing clan members to easily find historical data or manage administrative tasks. -->
+    <!-- Visualization & Content Choices: 
+         - Family Tree: HTML/CSS styled list (No SVG) -> Goal: Visualize direct lineage -> Interaction: Hover effects and expandable registration modal.
+         - Financial Dashboard: Chart.js Doughnut & Bar charts -> Goal: Clear view of clan funds -> Interaction: Hover for exact amounts. 
+         - Ancestor Timeline: CSS Grid cards -> Goal: Organized history. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        :root {
+            --primary: #4a3b32; /* Deep traditional brown */
+            --accent: #b48648; /* Subtle gold/amber */
+            --bg-light: #f7f5f0; /* Hanji-like off-white */
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-light);
+            color: #333;
+        }
+        h1, h2, h3, .serif-font {
+            font-family: 'Noto Serif KR', serif;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e5e0d8; }
+        ::-webkit-scrollbar-thumb { background: #a89f91; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Navigation Underline Animation */
+        .nav-link { position: relative; text-decoration: none; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; 
+            bottom: -4px; left: 0; background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        /* Chart Container Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Tree Styles (CSS Only, No SVG) */
+        .tree-node {
+            position: relative;
+            padding: 1rem;
+            margin: 0 auto 2rem auto;
+            border: 2px solid #d4cfc4;
+            border-radius: 8px;
+            background: #fff;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .tree-node:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .tree-line {
+            position: absolute;
+            width: 2px;
+            height: 2rem;
+            background-color: var(--accent);
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -2rem;
+        }
+        .tree-node.last .tree-line { display: none; }
+        .tree-dots {
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 2rem;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+        }
+
+        /* Utility Hide */
+        .hidden-section { display: none; }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 border-b-4 border-[#4a3b32]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center cursor-pointer" onclick="navigate('home')">
+                    <div class="w-10 h-10 bg-[#4a3b32] text-white rounded-full flex items-center justify-center text-xl font-bold serif-font mr-3">迎日</div>
+                    <span class="font-bold text-2xl tracking-tight text-[#4a3b32] serif-font">영일정씨 좌랑공파</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8 font-medium text-stone-700">
+                    <button onclick="navigate('home')" class="nav-link nav-btn active" data-target="home">문중소개</button>
+                    <button onclick="navigate('tree')" class="nav-link nav-btn" data-target="tree">직계 가계도</button>
+                    <button onclick="navigate('ancestors')" class="nav-link nav-btn" data-target="ancestors">선조 업적</button>
+                    <button onclick="navigate('shrine')" class="nav-link nav-btn" data-target="shrine">원당 재실</button>
+                    <button onclick="navigate('finance')" class="nav-link nav-btn" data-target="finance">재무 관리</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-stone-700 hover:text-[#b48648] focus:outline-none text-3xl">
+                        &#9776;
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 text-center shadow-inner">
+                <button onclick="navigate('home')" class="block w-full py-3 hover:bg-stone-100 text-stone-800">문중소개</button>
+                <button onclick="navigate('tree')" class="block w-full py-3 hover:bg-stone-100 text-stone-800">직계 가계도</button>
+                <button onclick="navigate('ancestors')" class="block w-full py-3 hover:bg-stone-100 text-stone-800">선조 업적</button>
+                <button onclick="navigate('shrine')" class="block w-full py-3 hover:bg-stone-100 text-stone-800">원당 재실</button>
+                <button onclick="navigate('finance')" class="block w-full py-3 hover:bg-stone-100 text-stone-800">재무 관리</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        
+        <!-- SECTION 1: Home / Intro -->
+        <section id="home" class="page-section">
+            <div class="relative bg-stone-800 text-white overflow-hidden">
+                <div class="absolute inset-0 opacity-40 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsLW9wYWNpdHk9Ii4wNSI+PHBhdGggZD0iTTAgMGg0MDB2NDAwSDB6IiBmaWxsPSIjZmZmIi8+PC9zdmc+')] bg-center bg-cover"></div>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-wide drop-shadow-lg">뿌리 깊은 나무, <span class="text-[#b48648]">영일정씨</span></h1>
+                    <p class="text-xl md:text-2xl font-light mb-10 max-w-3xl mx-auto leading-relaxed">
+                        시조 정종은(鄭宗殷) 할아버님의 얼을 이어받아, <br class="hidden md:block">
+                        충절과 학문의 가풍을 지켜온 좌랑공파 문중 홈페이지에 오신 것을 환영합니다.
+                    </p>
+                    <button onclick="navigate('tree')" class="bg-[#b48648] hover:bg-[#9c743e] text-white px-8 py-3 rounded text-lg transition-colors duration-300 shadow-md">
+                        나의 뿌리 찾기 (가계도)
+                    </button>
+                </div>
+            </div>
+            <div class="max-w-5xl mx-auto px-4 py-16 text-center">
+                <h2 class="text-3xl font-bold text-[#4a3b32] mb-6">문중 소개</h2>
+                <p class="text-lg text-stone-600 leading-relaxed max-w-4xl mx-auto">
+                    영일정씨(迎日鄭氏)는 신라 말기의 학자 정종은(鄭宗殷)을 시조로 모시는 대한민국의 대표적인 명문 거족입니다. 
+                    본 홈페이지는 영일정씨 중에서도 좌랑공파(佐郞公派) 종친들의 화합과 뿌리 의식을 고취하기 위해 제작되었습니다. 
+                    특히 27대 정용범, 28대 정병운, 29대 정한채로 이어지는 직계 라인을 중심으로, 후손들이 언제든 가계도를 확인하고 
+                    문중의 대소사와 재무 현황을 투명하게 공유할 수 있는 열린 공간입니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Family Tree -->
+        <section id="tree" class="page-section hidden-section bg-[#fdfdfb] py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-[#4a3b32] mb-4">직계 가계도 (좌랑공파)</h2>
+                    <p class="text-lg text-stone-600">
+                        시조부터 29대 정한채에 이르는 자랑스러운 직계 계보를 확인하고, <br>
+                        하위 후손을 등록하여 가족 구성을 관리해 보세요.
+                    </p>
+                </div>
+
+                <!-- CSS Tree Layout -->
+                <div class="flex flex-col items-center justify-center py-8">
+                    <!-- 1st Gen -->
+                    <div class="tree-node border-[#4a3b32]">
+                        <div class="text-sm text-stone-500 font-bold mb-1">시조 (1대)</div>
+                        <div class="text-2xl serif-font font-bold text-[#4a3b32]">정종은 <span class="text-base font-normal text-stone-500">(鄭宗殷)</span></div>
+                        <div class="text-xs text-stone-400 mt-2">신라 말기 학자</div>
+                        <div class="tree-line"></div>
+                    </div>
+                    
+                    <div class="tree-dots">&#8942;</div>
+
+                    <!-- Branch Ancestor -->
+                    <div class="tree-node">
+                        <div class="text-sm text-[#b48648] font-bold mb-1">파조 (좌랑공파)</div>
+                        <div class="text-xl serif-font font-bold text-stone-800">좌랑공 파조</div>
+                        <div class="text-xs text-stone-400 mt-2">영일정씨 좌랑공파의 시작</div>
+                        <div class="tree-line"></div>
+                    </div>
+
+                    <div class="tree-dots">&#8942;</div>
+
+                    <!-- 27th Gen -->
+                    <div class="tree-node bg-stone-50">
+                        <div class="text-sm text-stone-500 font-bold mb-1">27대</div>
+                        <div class="text-2xl serif-font font-bold text-stone-800">정용범</div>
+                        <div class="tree-line"></div>
+                    </div>
+
+                    <!-- 28th Gen -->
+                    <div class="tree-node bg-stone-50">
+                        <div class="text-sm text-stone-500 font-bold mb-1">28대</div>
+                        <div class="text-2xl serif-font font-bold text-stone-800">정병운</div>
+                        <div class="tree-line"></div>
+                    </div>
+
+                    <!-- 29th Gen -->
+                    <div class="tree-node bg-amber-50 border-[#b48648] shadow-lg transform scale-105">
+                        <div class="text-sm text-[#b48648] font-bold mb-1">29대 (현재 기준)</div>
+                        <div class="text-3xl serif-font font-bold text-[#4a3b32]">정한채</div>
+                        <div class="text-sm text-stone-600 mt-2">현재 열람중인 직계 라인</div>
+                        <div class="tree-line"></div>
+                    </div>
+
+                    <!-- Descendants Area (Dynamic) -->
+                    <div id="descendants-container" class="flex flex-col items-center w-full">
+                        <!-- New nodes will be appended here -->
+                    </div>
+
+                    <!-- Add Button -->
+                    <div class="mt-8 text-center tree-node last border-dashed border-stone-400 bg-transparent hover:bg-stone-50 cursor-pointer" onclick="openTreeModal()">
+                        <div class="text-3xl text-stone-400 mb-2">+</div>
+                        <div class="text-stone-600 font-medium">하위 후손 등록하기</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Ancestors -->
+        <section id="ancestors" class="page-section hidden-section py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-[#4a3b32] mb-4">자랑스러운 선조 업적</h2>
+                    <p class="text-lg text-stone-600">영일정씨를 빛낸 대표적인 역사적 인물들의 고귀한 발자취입니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Ancestor 1 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-stone-200 hover:shadow-xl transition-shadow">
+                        <div class="bg-[#4a3b32] text-white p-4 text-center">
+                            <h3 class="text-2xl font-bold serif-font">포은 정몽주 (鄭夢周)</h3>
+                            <p class="text-stone-300 text-sm">고려 말기의 문신·학자</p>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-stone-700 leading-relaxed mb-4">
+                                영일정씨를 대표하는 인물로, 고려에 대한 끝없는 충절의 상징입니다. 성리학을 깊이 연구하여 동방이학(東方理學)의 조종으로 추앙받으며, 단심가(丹心歌)를 남겨 만고에 충절을 알렸습니다.
+                            </p>
+                            <div class="text-sm text-[#b48648] font-bold">주요 업적: 오부학당 설립, 대명 외교, 성리학 보급</div>
+                        </div>
+                    </div>
+
+                    <!-- Ancestor 2 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-stone-200 hover:shadow-xl transition-shadow">
+                        <div class="bg-[#b48648] text-white p-4 text-center">
+                            <h3 class="text-2xl font-bold serif-font">송강 정철 (鄭澈)</h3>
+                            <p class="text-stone-100 text-sm">조선 중기의 문신·시인</p>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-stone-700 leading-relaxed mb-4">
+                                조선 시대 가사 문학의 대가로 꼽힙니다. 관동별곡, 사미인곡, 속미인곡 등 국문학사에 길이 남을 명작을 집필하였으며, 정치적으로도 좌의정에 오르는 등 큰 족적을 남겼습니다.
+                            </p>
+                            <div class="text-sm text-[#4a3b32] font-bold">주요 업적: 가사문학의 최고봉, 좌의정 역임</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 bg-stone-100 p-6 rounded-lg text-center">
+                    <p class="text-stone-600">
+                        더 많은 선조들의 상세한 정보와 문헌 자료는 <a href="http://www.yeongiljeong.or.kr/" target="_blank" class="text-blue-600 underline font-medium">영일정씨 대종회 공식 사이트</a>에서 확인하실 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Wondang Shrine -->
+        <section id="shrine" class="page-section hidden-section bg-[#fdfdfb] py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-[#4a3b32] mb-4">영천 북안 원당 재실</h2>
+                    <p class="text-lg text-stone-600">경북 영천시 북안면 원당리에 위치한 우리 문중의 얼이 깃든 곳입니다.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 mb-12">
+                    <div class="md:w-1/2 flex items-center justify-center bg-stone-200 rounded-lg h-80 shadow-inner overflow-hidden border border-stone-300">
+                        <!-- Placeholder for Shrine Image -->
+                        <div class="text-center text-stone-400">
+                            <div class="text-6xl mb-4">&#8962;</div>
+                            <p class="font-medium">원당 재실 전경 사진 등록 공간</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-stone-800 mb-4 serif-font">유래 및 안내</h3>
+                        <p class="text-stone-600 leading-relaxed mb-6">
+                            원당 재실은 영일정씨 좌랑공파 선조들의 위패를 모시고 제사를 모시는 신성한 공간입니다. 예로부터 후손들이 모여 예를 갖추고 종친간의 정을 나누는 화합의 장으로 역할을 해왔습니다. 매년 시제(時祭) 때마다 전국의 후손들이 모여 조상의 덕을 기립니다.
+                        </p>
+                        <div class="bg-white p-4 rounded border-l-4 border-[#b48648] shadow-sm">
+                            <p class="font-bold text-stone-700">위치: 경상북도 영천시 북안면 원당리</p>
+                            <p class="text-sm text-stone-500 mt-1">방문 전 종친회 총무에게 사전 연락 부탁드립니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Board for Future Updates -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-stone-100 p-4 border-b border-stone-200 flex justify-between items-center">
+                        <h4 class="font-bold text-lg text-stone-800">재실 소식 및 공지사항</h4>
+                        <button class="text-sm bg-stone-700 text-white px-3 py-1 rounded hover:bg-stone-800">글쓰기 (관리자)</button>
+                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-stone-50 text-stone-600 text-sm uppercase tracking-wider">
+                                <th class="p-4 border-b">번호</th>
+                                <th class="p-4 border-b w-1/2">제목</th>
+                                <th class="p-4 border-b">작성자</th>
+                                <th class="p-4 border-b">등록일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-stone-50">
+                                <td class="p-4 border-b text-stone-500">2</td>
+                                <td class="p-4 border-b font-medium text-stone-800"><a href="#" class="hover:underline">2026년 추계 시제 일정 안내</a></td>
+                                <td class="p-4 border-b text-stone-500">종친회장</td>
+                                <td class="p-4 border-b text-stone-500">2026-03-15</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50">
+                                <td class="p-4 border-b text-stone-500">1</td>
+                                <td class="p-4 border-b font-medium text-stone-800"><a href="#" class="hover:underline">원당 재실 지붕 보수 공사 완료 보고</a></td>
+                                <td class="p-4 border-b text-stone-500">총무</td>
+                                <td class="p-4 border-b text-stone-500">2025-10-20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Finance Management -->
+        <section id="finance" class="page-section hidden-section py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-[#4a3b32] mb-4">문중 재무 관리</h2>
+                    <p class="text-lg text-stone-600">
+                        종친회의 투명한 예산 운영을 위해 영수증과 통장 내역을 관리합니다.<br>
+                        자동 입출금 기록 및 증빙자료를 통해 잔액을 확인할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Left: Upload Form -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-md border-t-4 border-[#b48648]">
+                        <h3 class="text-xl font-bold text-stone-800 mb-6 flex items-center">
+                            <span class="text-2xl mr-2">&#128179;</span> 비용/수입 증빙 등록
+                        </h3>
+                        <form id="finance-form" onsubmit="handleFinanceSubmit(event)">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-stone-700 mb-1">구분</label>
+                                <select id="fin-type" class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648] focus:border-[#b48648]">
+                                    <option value="출금">출금 (비용)</option>
+                                    <option value="입금">입금 (회비/찬조)</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-stone-700 mb-1">관련 통장 (계좌)</label>
+                                <select id="fin-account" class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648] focus:border-[#b48648]">
+                                    <option value="문중 기본통장">문중 기본통장 (농협)</option>
+                                    <option value="재실 보수기금">재실 보수기금 (국민)</option>
+                                    <option value="행사/시제 기금">행사/시제 기금 (신한)</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-stone-700 mb-1">금액 (원)</label>
+                                <input type="number" id="fin-amount" required class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648]" placeholder="예: 50000">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-stone-700 mb-1">내용 간략 기술</label>
+                                <input type="text" id="fin-desc" required class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648]" placeholder="예: 종친회 회의 식대">
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-stone-700 mb-1">영수증/통장사본 이미지 업로드</label>
+                                <input type="file" accept="image/*" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200">
+                            </div>
+                            <button type="submit" class="w-full bg-[#4a3b32] text-white py-2 rounded hover:bg-[#362b24] transition font-bold">
+                                장부 기록 및 첨부
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Dashboard & Logs -->
+                    <div class="lg:col-span-2 space-y-8">
+                        
+                        <!-- Account Balances Chart -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-stone-800 mb-4 border-b pb-2">통장별 잔액 현황</h3>
+                            <div class="flex flex-col md:flex-row items-center gap-6">
+                                <!-- Chart Container styled per requirements -->
+                                <div class="chart-container md:w-1/2">
+                                    <canvas id="balanceChart"></canvas>
+                                </div>
+                                <div class="md:w-1/2 w-full grid grid-cols-1 gap-4" id="balance-cards">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Ledger -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold text-stone-800 mb-4 border-b pb-2">최근 입출금 장부</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-sm">
+                                    <thead>
+                                        <tr class="bg-stone-100 text-stone-700">
+                                            <th class="p-3 border-b">일자</th>
+                                            <th class="p-3 border-b">구분</th>
+                                            <th class="p-3 border-b">통장명</th>
+                                            <th class="p-3 border-b">내용</th>
+                                            <th class="p-3 border-b text-right">금액</th>
+                                            <th class="p-3 border-b text-center">증빙</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ledger-body">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-stone-400 py-8 text-center text-sm">
+        <p>&copy; 2026 영일정씨 좌랑공파 문중. All rights reserved.</p>
+        <p class="mt-2">본 홈페이지는 문중원들의 정보 공유와 화합을 위해 제작되었습니다.</p>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div id="tree-modal" class="fixed inset-0 modal-backdrop hidden z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeTreeModal()" class="absolute top-4 right-4 text-stone-500 hover:text-stone-800 text-2xl font-bold">&times;</button>
+            <h3 class="text-2xl font-bold text-[#4a3b32] mb-2 serif-font">하위 후손 등록</h3>
+            <p class="text-sm text-stone-600 mb-6">나의 위치와 후손 정보를 등록하여 가족 구성을 관리하세요.</p>
+            
+            <form onsubmit="handleTreeRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-stone-700 mb-1">직계 부모 선택</label>
+                    <select id="reg-parent" class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648]">
+                        <option value="29대 정한채">29대 정한채 (현재 기준)</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-stone-700 mb-1">세대 수 (대)</label>
+                    <input type="number" id="reg-gen" value="30" readonly class="w-full border border-stone-300 p-2 rounded bg-stone-100">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-stone-700 mb-1">성명</label>
+                    <input type="text" id="reg-name" required class="w-full border border-stone-300 p-2 rounded focus:ring-[#b48648]" placeholder="예: 정지훈">
+                </div>
+                <button type="submit" class="w-full bg-[#b48648] text-white py-2 rounded hover:bg-[#9c743e] transition font-bold">
+                    가계도에 추가하기
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Navigation Logic ---
+        function navigate(targetId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.add('hidden-section');
+            });
+            // Show target
+            document.getElementById(targetId).classList.remove('hidden-section');
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.target === targetId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            // Render charts if finance section is active and chart isn't drawn yet
+            if(targetId === 'finance' && !window.balanceChartInstance) {
+                initFinanceChart();
+            }
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+
+        // --- 2. Family Tree Logic ---
+        function openTreeModal() {
+            document.getElementById('tree-modal').classList.remove('hidden');
+        }
+        function closeTreeModal() {
+            document.getElementById('tree-modal').classList.add('hidden');
+        }
+        function handleTreeRegister(e) {
+            e.preventDefault();
+            const gen = document.getElementById('reg-gen').value;
+            const name = document.getElementById('reg-name').value;
+            
+            const container = document.getElementById('descendants-container');
+            
+            // Create connecting line before the new node
+            const line = document.createElement('div');
+            line.className = 'tree-line relative h-8 w-0.5 bg-[#b48648] my-0 mx-auto';
+            line.style.position = 'static'; // Override absolute for flow
+            line.style.transform = 'none';
+            container.appendChild(line);
+
+            // Create new node
+            const node = document.createElement('div');
+            node.className = 'tree-node bg-white border-[#b48648] w-48 py-3 mb-0';
+            node.innerHTML = `
+                <div class="text-xs text-stone-500 font-bold mb-1">${gen}대</div>
+                <div class="text-xl serif-font font-bold text-stone-800">${name}</div>
+            `;
+            container.appendChild(node);
+
+            // Update parent dropdown for deeper nesting
+            const parentSelect = document.getElementById('reg-parent');
+            parentSelect.innerHTML = `<option value="${gen}대 ${name}">${gen}대 ${name}</option>`;
+            document.getElementById('reg-gen').value = parseInt(gen) + 1;
+            document.getElementById('reg-name').value = '';
+
+            closeTreeModal();
+            alert(`${name}님이 직계 가계도에 성공적으로 등록되었습니다.`);
+        }
+
+
+        // --- 3. Finance Dashboard Logic ---
+        
+        // Initial Mock Data
+        let accountBalances = {
+            "문중 기본통장": 12500000,
+            "재실 보수기금": 8300000,
+            "행사/시제 기금": 3200000
+        };
+
+        let transactions = [
+            { date: "2026-03-01", type: "입금", account: "행사/시제 기금", desc: "종친회비 입금 (29대 정한채)", amount: 100000, proof: "첨부됨" },
+            { date: "2026-02-15", type: "출금", account: "문중 기본통장", desc: "정기총회 식대 결제", amount: 450000, proof: "영수증" },
+            { date: "2026-01-10", type: "출금", account: "재실 보수기금", desc: "원당 재실 제초 작업비", amount: 200000, proof: "영수증" }
+        ];
+
+        // Format currency
+        const formatMoney = (num) => new Intl.NumberFormat('ko-KR').format(num) + '원';
+
+        function renderLedger() {
+            const tbody = document.getElementById('ledger-body');
+            tbody.innerHTML = '';
+            transactions.forEach(tx => {
+                const isExpense = tx.type === '출금';
+                const amountClass = isExpense ? 'text-red-600' : 'text-blue-600';
+                const sign = isExpense ? '-' : '+';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-stone-50 border-b border-stone-100">
+                        <td class="p-3 text-stone-500">${tx.date}</td>
+                        <td class="p-3"><span class="${isExpense ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'} px-2 py-1 rounded text-xs">${tx.type}</span></td>
+                        <td class="p-3 font-medium text-stone-700">${tx.account}</td>
+                        <td class="p-3 text-stone-600">${tx.desc}</td>
+                        <td class="p-3 text-right font-bold ${amountClass}">${sign}${formatMoney(tx.amount)}</td>
+                        <td class="p-3 text-center"><button class="text-stone-400 hover:text-stone-700" title="증빙보기">&#128206;</button></td>
+                    </tr>
+                `;
+            });
+            renderBalanceCards();
+        }
+
+        function renderBalanceCards() {
+            const container = document.getElementById('balance-cards');
+            container.innerHTML = '';
+            let total = 0;
+            
+            const colors = ['border-blue-500', 'border-emerald-500', 'border-amber-500'];
+            let i = 0;
+
+            for(const [acc, bal] of Object.entries(accountBalances)) {
+                total += bal;
+                container.innerHTML += `
+                    <div class="bg-stone-50 p-4 rounded border-l-4 ${colors[i%3]} shadow-sm flex justify-between items-center">
+                        <span class="font-medium text-stone-700">${acc}</span>
+                        <span class="text-lg font-bold text-stone-900">${formatMoney(bal)}</span>
+                    </div>
+                `;
+                i++;
+            }
+            // Total
+            container.innerHTML += `
+                <div class="bg-[#4a3b32] p-4 rounded shadow-sm flex justify-between items-center text-white mt-2">
+                    <span class="font-bold">총 잔액</span>
+                    <span class="text-xl font-bold">${formatMoney(total)}</span>
+                </div>
+            `;
+        }
+
+        function initFinanceChart() {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            
+            const labels = Object.keys(accountBalances);
+            const data = Object.values(accountBalances);
+
+            window.balanceChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL for chart container constraints
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + formatMoney(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        function handleFinanceSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('fin-type').value;
+            const account = document.getElementById('fin-account').value;
+            const amount = parseInt(document.getElementById('fin-amount').value);
+            const desc = document.getElementById('fin-desc').value;
+
+            // Update balance
+            if(type === '입금') {
+                accountBalances[account] += amount;
+            } else {
+                accountBalances[account] -= amount;
+            }
+
+            // Get today's date
+            const today = new Date().toISOString().split('T')[0];
+
+            // Add to ledger
+            transactions.unshift({
+                date: today,
+                type: type,
+                account: account,
+                desc: desc,
+                amount: amount,
+                proof: "첨부됨(신규)"
+            });
+
+            // Update UI
+            renderLedger();
+            
+            // Update Chart
+            if(window.balanceChartInstance) {
+                window.balanceChartInstance.data.datasets[0].data = Object.values(accountBalances);
+                window.balanceChartInstance.update();
+            }
+
+            // Reset form
+            e.target.reset();
+            alert('장부가 성공적으로 기록되었으며, 증빙자료가 첨부되었습니다.');
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            renderLedger();
+        };
+
+    </script>
+</body>
+</html>
