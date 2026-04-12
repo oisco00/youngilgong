@@ -1,4 +1,3 @@
-
 const STORAGE_KEY = 'youngil-jeong-clan-site-v3';
 const MEDIA_STORAGE_KEY = 'youngil-jeong-media-admin-v1';
 
@@ -40,8 +39,8 @@ const defaultData = {
     { label: '보완 항목', value: '창건연도, 제향 대상, 중수 연혁, 원당리 입향 내력은 문중 자료 대조 후 추가' }
   ],
   externalLinks: [
-    { title: '경주박물관', url: 'https://gyeongju.museum.go.kr/', desc: '관련 문화유산 참고 사이트' },
-    { title: 'yuniljung.com', url: 'http://yuniljung.com/', desc: '문중 관련 참고 홈페이지' }
+    { title: '영일정씨판결사공파 중앙화수회', url: 'https://cafe.daum.net/yoonilj/', desc: '영일정씨판결사공파 중앙화수회 카페 사이트' },
+    { title: '연일정닷컴', url: 'http://yuniljung.com/', desc: '포은공파 포천공 포은의 19대손 정덕화 홈페이지' }
   ],
   sourceList: [
     { title: '영일정씨 족보 - 한국민족문화대백과사전', url: 'https://encykorea.aks.ac.kr/Article/E0037647', desc: '영일정씨 대동보의 성격, 시조 정종은, 중시조 정습명·정극유, 편찬 이력' },
