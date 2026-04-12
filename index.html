@@ -13,9 +13,9 @@
 <body>
   <header class="hero">
     <div class="container">
-      <div class="badge">문중 소개 · 직계 트리 · 사진/영상 · 비용관리</div>
-      <h1 id="siteTitle">영일정씨 문중 홈페이지</h1>
-      <p class="subtitle" id="siteSubtitle">좌랑공파 · 문중 계보 · 원당 재실 · 기록 아카이브</p>
+      <div class="badge">문중 역사 · 직계 계보 · 사진/영상 · 비용관리 · 디지털 아카이브</div>
+      <h1 id="siteTitle">연일정씨 사정공파 · 좌랑공계 문중 홈페이지</h1>
+      <p class="subtitle" id="siteSubtitle">지주사공파 · 사정공파(2파) · 좌랑공계 · 원당 재실 · 기록 아카이브</p>
     </div>
   </header>
 
@@ -32,40 +32,97 @@
   <main class="main">
     <div class="container">
       <section id="panel-home" class="panel active">
-        <div class="grid cols-2">
-          <article class="card">
-            <h2>문중 홈페이지 개요</h2>
-            <div class="notice">
-              영일정씨 좌랑공파의 문중 소개, 직계 계보, 원당 재실 기록, 사진·영상 아카이브를 한곳에서 확인할 수 있도록 구성했습니다.
+        <div class="hero-story card premium-card">
+          <div class="hero-story-grid">
+            <div>
+              <div class="eyebrow">YEONIL JEONG CLAN · SINCE GORYEO</div>
+              <h2 class="display-title">충·효·나눔의 전통을 잇는<br>연일정씨 사정공파 · 좌랑공계</h2>
+              <p class="lead-text">
+                본 홈페이지는 연일정씨 지주사공파의 큰 계통 아래, 사정공파(2파)와 좌랑공계로 이어지는 직계 흐름과
+                문중의 역사, 충의, 재실 기록, 사진·영상, 비용관리를 한곳에서 정리한 기록 아카이브입니다.
+              </p>
+              <div class="hero-chip-row">
+                <span class="hero-chip">지주사공파(대파)</span>
+                <span class="hero-chip">사정공파(중파·2파)</span>
+                <span class="hero-chip">좌랑공계(소파)</span>
+                <span class="hero-chip">29대손 정한채</span>
+              </div>
             </div>
-            <div class="stat-row">
-              <div class="stat"><div class="v">1~30</div><div>세대 흐름</div></div>
-              <div class="stat"><div class="v">좌랑공파</div><div>직계 중심</div></div>
-              <div class="stat"><div class="v">사진·영상</div><div>순서 배열</div></div>
-              <div class="stat"><div class="v">장부</div><div>계좌별 확인</div></div>
+            <div class="story-highlight">
+              <div class="story-quote">“가문의 뿌리를 기록하고, 의로운 정신을 오늘에 잇다.”</div>
+              <div class="story-summary">
+                첫 화면에서 파계, 의병 정신, 최부자집과의 인연, 직계 계보를 한눈에 볼 수 있도록 전면 개편하였습니다.
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="grid cols-2 mt-18">
+          <article class="card premium-card">
+            <h2>가문의 계통</h2>
+            <div id="branchIntro" class="notice"></div>
+            <div id="branchList" class="list mt-18"></div>
           </article>
 
-          <article class="card">
-            <h2>영천 북안 원당 재실</h2>
-            <div id="wondangInfo" class="list"></div>
+          <article class="card premium-card">
+            <h2>나의 계보 위치</h2>
+            <div class="notice">
+              본 계보는 <strong>연일정씨 지주사공파(대파) → 사정공파(중파·2파) → 좌랑공계(소파)</strong>로 이어지며,
+              현재 홈페이지 기준 기록 위치는 <strong>29대손 정한채</strong>와 <strong>30대 정현규</strong>입니다.
+            </div>
+            <div id="lineageTimeline" class="timeline-list mt-18"></div>
           </article>
         </div>
 
         <div class="grid cols-2 mt-18">
-          <article class="card">
+          <article class="card premium-card">
+            <h2>임진왜란의 영웅, 연일정씨 6의사</h2>
+            <div class="notice">
+              사정공(11대 세관)의 후손인 정준(鄭浚) 어른의 여섯 아들은 임진왜란이 일어나자 모두 의병으로 일어나 전공을 세웠으며,
+              후세에 <strong>연일정씨 6의사(六義士)</strong>로 전해집니다.
+            </div>
+            <div id="warHeroes" class="list mt-18"></div>
+          </article>
+
+          <article class="card premium-card emphasis-card">
+            <h2>정사제(鄭思悌)와 최부자집의 인연</h2>
+            <div id="legacyStory" class="story-panels"></div>
+          </article>
+        </div>
+
+        <div class="grid cols-2 mt-18">
+          <article class="card premium-card">
+            <h2>영천 북안 원당 재실</h2>
+            <div id="wondangInfo" class="list"></div>
+          </article>
+
+          <article class="card premium-card">
+            <h2>가문의 자부심과 의미</h2>
+            <div id="heritageMessage" class="notice"></div>
+            <div class="stat-row premium-stats">
+              <div class="stat"><div class="v">5개 파계</div><div>가문의 큰 줄기</div></div>
+              <div class="stat"><div class="v">6의사</div><div>충의의 상징</div></div>
+              <div class="stat"><div class="v">22~30대</div><div>직계 계보 기록</div></div>
+              <div class="stat"><div class="v">사진·기록</div><div>디지털 보존</div></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="grid cols-2 mt-18">
+          <article class="card premium-card">
             <h2>영일정씨를 빛낸 대표 인물</h2>
             <div class="list" id="notables"></div>
           </article>
 
-          <article class="card">
-            <h2>좌랑공파 · 직계 인물 기록</h2>
+          <article class="card premium-card">
+            <h2>좌랑공계 · 직계 인물 기록</h2>
             <h3 class="subhead">직계 주요 인물</h3>
             <div class="list" id="directPeople"></div>
             <h3 class="subhead">29대 정한채 공적</h3>
             <div class="list" id="myAchievements"></div>
           </article>
         </div>
+
       </section>
 
       <section id="panel-tree" class="panel">
