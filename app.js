@@ -42,7 +42,7 @@ const defaultData = {
   treeNodes: [
     { id: 'n1', name: '정종은', hanja: '鄭宗殷', gen: '1대', branch: '시조', verified: 'public', note: '신라 태종무열왕대 인물로 전해지는 영일정씨 시조. 초기 계대는 대동보와 공파보를 대조하며 보완 필요.' },
     { id: 'n2', name: '정습명', hanja: '鄭襲明', gen: '중시조', branch: '지주사공계', verified: 'public', note: '고려 전기 예부시랑·한림학사·추밀원지주사 등을 지낸 문신. 영일정씨 주요 중시조로 전승됨.' },
-        { id: 'n3', name: '좌랑공계 계보 연결 구간', hanja: '', gen: '2~21대', branch: '좌랑공계', verified: 'needs_review', note: '초기 계대는 공파보와 대동보의 대조를 통해 계속 보완할 수 있는 구간입니다.' },
+    { id: 'n3', name: '좌랑공계 계보 연결 구간', hanja: '', gen: '2~21대', branch: '좌랑공계', verified: 'needs_review', note: '초기 계대는 공파보와 대동보의 대조를 통해 계속 보완할 수 있는 구간입니다.' },
     { id: 'n22', name: '정장휴', hanja: '鄭長休', gen: '22대', branch: '직계', verified: 'family', note: '사용자 제공 직계 계보의 시작 구간.' },
     { id: 'n23', name: '정유종', hanja: '鄭裕宗', gen: '23대', branch: '직계', verified: 'family', note: '22대 정장휴에서 이어지는 직계 조상.' },
     { id: 'n24', name: '정치문', hanja: '鄭致文', gen: '24대', branch: '직계', verified: 'family', note: '23대 정유종에서 이어지는 직계 조상.' },
@@ -55,7 +55,7 @@ const defaultData = {
   ],
   treeEdges: [['n1','n2'],['n2','n3'],['n3','n22'],['n22','n23'],['n23','n24'],['n24','n25'],['n25','n26'],['n26','n27'],['n27','n28'],['n28','n29'],['n29','n30']],
   notables: [
-    { name: '정종은(鄭宗殷)', period: '신라', achievement: '영일정씨 시조로 전승되는 인물' },
+    { name: '정종은(鄭宗殷)', period: '신라', achievement: '영일정씨 시조로 전승' },
     { name: '정습명(鄭襲明)', period: '고려', achievement: '예부시랑·한림학사·추밀원지주사, 왕실 사부 역할' },
     { name: '정몽주(鄭夢周)', period: '고려 말', achievement: '문하찬성사·예문관제학, 고려의 절신이자 외교가·학자' },
     { name: '정보(鄭保)', period: '조선 전기', achievement: '감찰·예안현감, 정몽주의 손자' },
@@ -84,8 +84,8 @@ const defaultData = {
     { label: '보완 항목', value: '창건연도, 제향 대상, 중수 연혁, 원당리 입향 내력은 문중 자료 대조 후 추가' }
   ],
   externalLinks: [
-    { title: '경주박물관', url: 'https://gyeongju.museum.go.kr/', desc: '관련 문화유산 참고 사이트' },
-    { title: 'yuniljung.com', url: 'http://yuniljung.com/', desc: '문중 관련 참고 홈페이지' }
+    { title: '포은공파 홈페이지', url: 'http://www.yuniljung.com/', desc: '포은공파 포천공계 19대손 정덕화 운영 사이트' },
+    { title: '판결사공파 중앙화수회 카페', url: 'https://cafe.daum.net/yoonilj', desc: '판결사공파 중앙화수회 카페 정태식 운영 사이트' }
   ],
   sourceList: [
     { title: '영일정씨 족보 - 한국민족문화대백과사전', url: 'https://encykorea.aks.ac.kr/Article/E0037647', desc: '영일정씨 대동보의 성격, 시조 정종은, 중시조 정습명·정극유, 편찬 이력' },
