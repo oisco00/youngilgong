@@ -2,7 +2,7 @@ const STORAGE_KEY = 'youngil-jeong-clan-site-v6';
 const MEDIA_STORAGE_KEY = 'youngil-jeong-media-admin-v1';
 
 const defaultData = {
-  siteTitle: '영일정씨 지주사공계 문중 아카이브',
+  siteTitle: '영일정씨 지주사공계 문중',
   subtitle: '영일정씨의 유래와 종파 구조, 복재 정담 후손 계보, 영천 원당제실 기록을 근거 중심으로 정리한 디지털 문중 홈페이지',
   overviewStats: [
     { value: '2계열', label: '대문중의 큰 구조', meta: '공개 문헌상 지주사공계 · 감무공계' },
