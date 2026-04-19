@@ -1,6 +1,6 @@
 
 
-const STORAGE_KEY = 'youngil-jeong-clan-site-v4';
+const STORAGE_KEY = 'youngil-jeong-clan-site-v5';
 const MEDIA_STORAGE_KEY = 'youngil-jeong-media-admin-v1';
 
 const defaultData = {
@@ -23,11 +23,7 @@ const defaultData = {
     { gen: '감찰', name: '정인개', hanja: '鄭仁愷' },
     { gen: '복재', name: '정담', hanja: '鄭湛' },
     { gen: '연구구간', name: '중간 세대 미상', hanja: '未詳' },
-    { gen: '26대', name: '정호인', hanja: '鄭浩仁(추정)' },
-    { gen: '27대', name: '정무상', hanja: '鄭武相' },
-    { gen: '28대', name: '정병운', hanja: '鄭炳雲' },
-    { gen: '29대', name: '정한채', hanja: '鄭翰埰' },
-    { gen: '30대', name: '정현규', hanja: '鄭鉉圭' }
+    { gen: '26대', name: '정호인', hanja: '鄭浩仁(강한 추정)' }
   ],
   warHeroes: [
     { title: '1파 대표', desc: '대문중 운영상 첫째 파 대표가 참석하여 문중 주요 안건, 제향 협의, 사업 및 재정 현황을 공유하는 구간으로 정리합니다.' },
@@ -54,19 +50,8 @@ const defaultData = {
     { name: '정병운(鄭炳雲)', period: '28대', achievement: '복재공파세보 원문에서 사용자 직계 부친으로 확인되며, 근현대 가계의 중심을 이룹니다.' },
     { name: '정한채(鄭翰埰)', period: '29대', achievement: '사용자 본인으로, 복재 정담 후손의 계보를 현대 디지털 기록으로 재정리하는 역할을 맡고 있습니다.' }
   ],
-  directPeople: [
-    { title: '26대 정호인(鄭浩仁) · 강한 추정', body: '복재공파세보 66면의 26대 칸에서 확인되며, 다음 면의 정무상 계열과 편집상 같은 줄기로 연결될 가능성이 높습니다. 다만 현재 자료만으로는 확정 전 단계입니다.' },
-    { title: '27대 정무상(鄭武相) · 확정', body: '복재공파세보 67면에서 28대 정병운의 부친으로 직접 확인됩니다. 사용자 직계의 조부 세대입니다.' },
-    { title: '28대 정병운(鄭炳雲) · 확정', body: '복재공파세보 67면에서 29대 정한채의 부친으로 직접 확인됩니다. 사용자 직계의 부친 세대입니다.' },
-    { title: '29대 정한채(鄭翰埰) · 확정', body: '복재공파세보 67면에서 30대 정현규의 부친으로 직접 확인됩니다. 현재 홈페이지를 기획·정리하는 당사자입니다.' },
-    { title: '30대 정현규(鄭鉉圭) · 확정', body: '복재공파세보 67면에서 29대 정한채의 자(子)로 확인됩니다. 현재 직계의 다음 세대입니다.' }
-  ],
-  myAchievements: [
-    { title: '공개 문헌 확정 구간', detail: '정문예 → 정치소 → 정이상 → 정굉 → 정인개 → 정담으로 이어지는 계보는 영천 지역 공개 문헌에서 확인됩니다.' },
-    { title: '세보 원문 확정 구간', detail: '정무상 → 정병운 → 정한채 → 정현규는 복재공파세보 67면에서 세로 한 줄로 직접 확인됩니다.' },
-    { title: '추정 구간', detail: '26대 정호인은 복재공파세보 66면의 배치상 매우 유력하지만, 같은 면에서 직결선이 반복 표기되지 않아 추정으로 남겨 두었습니다.' },
-    { title: '기록 보완 방향', detail: '추후 동일 공파보의 앞뒤 면, 대동보, 서문, 범례, 인명색인 등을 함께 대조하면 복재 정담 이후의 중간 세대와 26대 연결을 더 단단하게 복원할 수 있습니다.' }
-  ],
+  directPeople: [],
+  myAchievements: [],
   wondangInfo: [
     { label: '원당제실의 위치와 의미', value: '영천 북안 원당은 선조를 봉향하고 문중 구성원이 모여 제향과 회의를 준비하는 상징적 공간으로 기억됩니다.' },
     { label: '정기 모임', value: '사용자 전언에 따르면 매년 4월 둘째 주 무렵 대문중회의가 열리며, 각 파 대표자가 참석하여 문중 현안을 협의합니다.' },
@@ -98,7 +83,7 @@ const defaultData = {
     { id: 'n10', name: '정호인', hanja: '鄭浩仁', gen: '26대', branch: '사용자 직계', verified: 'needs_review', note: '복재공파세보 66면의 배치상 매우 유력한 26대 후보입니다.' },
     { id: 'n11', name: '정무상', hanja: '鄭武相', gen: '27대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 조부 세대입니다.' },
     { id: 'n12', name: '정병운', hanja: '鄭炳雲', gen: '28대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 부친 세대입니다.' },
-    { id: 'n13', name: '정한채', hanja: '鄭翰埰', gen: '29대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 본인입니다.' },
+    { id: 'n13', name: '정한채', hanja: '鄭翰埰', gen: '29대', branch: '사용자 직계', verified: 'family', note: '대한민국명장(정보처리), 우수숙련기술인(정보처리), 대한민국산업현장교수(정보통신), (주)동양정보시스템 대표.' },
     { id: 'n14', name: '정현규', hanja: '鄭鉉圭', gen: '30대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 후손입니다.' }
   ],
   treeEdges: [['n1','n2'], ['n2','n3'], ['n3','n4'], ['n4','n5'], ['n5','n6'], ['n6','n7'], ['n7','n8'], ['n8','n9'], ['n9','n10'], ['n10','n11'], ['n11','n12'], ['n12','n13'], ['n13','n14']],
@@ -203,12 +188,18 @@ function renderHome() {
   const heritageMessage = qs('#heritageMessage');
   if (heritageMessage) heritageMessage.innerHTML = escapeHtml(state.heritageMessage || '');
 
-  qs('#wondangInfo').innerHTML = state.wondangInfo.map(i => `<div class="item"><strong>${escapeHtml(i.label)}</strong><div class="muted">${escapeHtml(i.value)}</div></div>`).join('');
-  qs('#notables').innerHTML = state.notables.map(i => `<div class="item"><strong>${escapeHtml(i.name)} <span class="muted">${escapeHtml(i.period)}</span></strong><div>${escapeHtml(i.achievement)}</div></div>`).join('');
-  qs('#directPeople').innerHTML = state.directPeople.map(i => `<div class="person-card"><strong>${escapeHtml(i.title)}</strong><div class="muted">${escapeHtml(i.body)}</div></div>`).join('');
-  qs('#myAchievements').innerHTML = state.myAchievements.map(i => `<div class="person-card"><strong>${escapeHtml(i.title)}</strong><div class="muted">${escapeHtml(i.detail)}</div></div>`).join('');
-  qs('#externalLinks').innerHTML = state.externalLinks.map(i => `<div class="source-item"><a href="${i.url}" target="_blank" rel="noreferrer">${escapeHtml(i.title)}</a><div class="muted">${escapeHtml(i.desc || '')}</div></div>`).join('');
-  qs('#sourceList').innerHTML = state.sourceList.map(i => `<div class="source-item"><a href="${i.url}" target="_blank" rel="noreferrer">${escapeHtml(i.title)}</a><div class="muted">${escapeHtml(i.desc)}</div></div>`).join('');
+  const wondangInfo = qs('#wondangInfo');
+  if (wondangInfo) wondangInfo.innerHTML = state.wondangInfo.map(i => `<div class="item"><strong>${escapeHtml(i.label)}</strong><div class="muted">${escapeHtml(i.value)}</div></div>`).join('');
+  const notables = qs('#notables');
+  if (notables) notables.innerHTML = state.notables.map(i => `<div class="item"><strong>${escapeHtml(i.name)} <span class="muted">${escapeHtml(i.period)}</span></strong><div>${escapeHtml(i.achievement)}</div></div>`).join('');
+  const directPeople = qs('#directPeople');
+  if (directPeople) directPeople.innerHTML = state.directPeople.map(i => `<div class="person-card"><strong>${escapeHtml(i.title)}</strong><div class="muted">${escapeHtml(i.body)}</div></div>`).join('');
+  const myAchievements = qs('#myAchievements');
+  if (myAchievements) myAchievements.innerHTML = state.myAchievements.map(i => `<div class="person-card"><strong>${escapeHtml(i.title)}</strong><div class="muted">${escapeHtml(i.detail)}</div></div>`).join('');
+  const externalLinks = qs('#externalLinks');
+  if (externalLinks) externalLinks.innerHTML = state.externalLinks.map(i => `<div class="source-item"><a href="${i.url}" target="_blank" rel="noreferrer">${escapeHtml(i.title)}</a><div class="muted">${escapeHtml(i.desc || '')}</div></div>`).join('');
+  const sourceList = qs('#sourceList');
+  if (sourceList) sourceList.innerHTML = state.sourceList.map(i => `<div class="source-item"><a href="${i.url}" target="_blank" rel="noreferrer">${escapeHtml(i.title)}</a><div class="muted">${escapeHtml(i.desc)}</div></div>`).join('');
 }
 
 function renderTree() {
