@@ -131,7 +131,7 @@ const defaultData = {
     { id: 'n11', name: '정무상', hanja: '鄭武相', gen: '27대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 조부 세대입니다.' },
     { id: 'n12', name: '정병운', hanja: '鄭炳雲', gen: '28대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 부친 세대입니다.' },
     { id: 'n13', name: '정한채', hanja: '鄭翰埰', gen: '29대', branch: '사용자 직계', verified: 'family', note: '대한민국명장(정보처리), 우수숙련기술인(정보처리), 대한민국산업현장교수(정보통신), (주)동양정보시스템 대표.' },
-    { id: 'n13', name: '정길채', hanja: '鄭吉埰', gen: '29대', branch: '사용자 형제', verified: 'family', note: '대한민국명장(정보처리), 우수숙련기술인(정보처리), 대한민국산업현장교수(정보통신), (주)동양정보시스템 대표.' },
+    { id: 'n13', name: '정길채', hanja: '鄭吉埰', gen: '29대', branch: '사용자 형제', verified: 'family', note: },
     { id: 'n14', name: '정현규', hanja: '鄭鉉圭', gen: '30대', branch: '사용자 직계', verified: 'family', note: '경상북도교육청근무, 기록연구사(경북대 박사과정)' },
     { id: 'n14', name: '정현우', hanja: '鄭鉉祐', gen: '30대', branch: '사용자 조카', verified: 'family', note: '디자인 기획' },
     { id: 'n14', name: '정현민', hanja: '鄭鉉敏', gen: '30대', branch: '사용자 직계', verified: 'family', note: '제빵사' },
