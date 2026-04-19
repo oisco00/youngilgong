@@ -243,3 +243,9 @@ th { background: var(--soft); color: var(--brand); }
   .hero-story-grid { grid-template-columns: 1fr; }
   .timeline-item { grid-template-columns: 1fr; }
 }
+
+
+.lineage-note { margin-top: 12px; }
+@media (max-width: 900px) {
+  .hero-chip-row { gap: 8px; }
+}
