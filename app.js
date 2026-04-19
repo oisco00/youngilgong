@@ -2,7 +2,7 @@ const STORAGE_KEY = 'youngil-jeong-clan-site-v6';
 const MEDIA_STORAGE_KEY = 'youngil-jeong-media-admin-v1';
 
 const defaultData = {
-  siteTitle: '영일정씨 지주사공계 문중 아카이브',
+  siteTitle: '영일정씨 지주사공계 문중',
   subtitle: '영일정씨의 유래와 종파 구조, 복재 정담 후손 계보, 영천 원당제실 기록을 근거 중심으로 정리한 디지털 문중 홈페이지',
   overviewStats: [
     { value: '2계열', label: '대문중의 큰 구조', meta: '공개 문헌상 지주사공계 · 감무공계' },
@@ -131,7 +131,11 @@ const defaultData = {
     { id: 'n11', name: '정무상', hanja: '鄭武相', gen: '27대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 조부 세대입니다.' },
     { id: 'n12', name: '정병운', hanja: '鄭炳雲', gen: '28대', branch: '사용자 직계', verified: 'family', note: '복재공파세보 67면에서 직접 확인되는 사용자 직계 부친 세대입니다.' },
     { id: 'n13', name: '정한채', hanja: '鄭翰埰', gen: '29대', branch: '사용자 직계', verified: 'family', note: '대한민국명장(정보처리), 우수숙련기술인(정보처리), 대한민국산업현장교수(정보통신), (주)동양정보시스템 대표.' },
-    { id: 'n14', name: '정현규', hanja: '鄭鉉圭', gen: '30대', branch: '사용자 직계', verified: 'family', note: '경상북도교육청근무, 기록연구사(경북대 박사과정)' }
+    { id: 'n13', name: '정길채', hanja: '鄭吉埰', gen: '29대', branch: '사용자 형제', verified: 'family', note: '' },
+    { id: 'n14', name: '정현규', hanja: '鄭鉉圭', gen: '30대', branch: '사용자 직계', verified: 'family', note: '경상북도교육청근무, 기록연구사(경북대 박사과정)' },
+    { id: 'n14', name: '정현우', hanja: '鄭鉉祐', gen: '30대', branch: '사용자 조카', verified: 'family', note: '디자인 기획' },
+    { id: 'n14', name: '정현민', hanja: '鄭鉉敏', gen: '30대', branch: '사용자 직계', verified: 'family', note: '제빵사' },
+    { id: 'n14', name: '정현일', hanja: '鄭鉉一', gen: '30대', branch: '사용자 조카', verified: 'family', note: '대구시 공무원' }
   ],
   treeEdges: [['n1','n2'], ['n2','n3'], ['n3','n4'], ['n4','n5'], ['n5','n6'], ['n6','n7'], ['n7','n8'], ['n8','n9'], ['n9','n10'], ['n10','n11'], ['n11','n12'], ['n12','n13'], ['n13','n14']],
   ledgerAccounts: [
