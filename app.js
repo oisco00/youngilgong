@@ -116,7 +116,7 @@ const defaultData = {
     { title: '복재공파세보 사용자 소장본', url: '#', desc: '현재 직계와 26대 유력 인물을 대조한 세보 원문 자료' }
   ],
   externalLinks: [
-    { title: '경주박물관', url: 'https://gyeongju.museum.go.kr/', desc: '경주권 역사·문화유산 참고' },
+    { title: '경주시립도서관(족보자료관)', url: 'https://jokbo.gyeongju.go.kr/bbs/board.php?bo_table=familytree&page=10&page=11#page/1', desc: '영일정씨 복제공파세보' },
     { title: 'yuniljung.com', url: 'http://yuniljung.com/', desc: '문중 관련 참고 홈페이지' }
   ],
   treeNodes: [
